@@ -29,25 +29,20 @@ class OrderService {
 
         // Store the reward points in a read-only local variable
         val totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        val rewardsTier = rewards.findLast { it.points <= totalRewardPoints }
+        val nextRewardsTier = rewards.find { it.points > totalRewardPoints }
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = totalRewardPoints,
-            nextRewardsTier = "??",
-            rewardsTier = getRewardsTierName(totalRewardPoints),
-            nextRewardsTierName = "???",
+            rewardsTier = if (rewardsTier != null ) rewardsTier.tier else "",
+            rewardsTierName = if (rewardsTier != null ) rewardsTier.rewardName else "",
+            nextRewardsTier = if (nextRewardsTier != null ) nextRewardsTier.tier else "",
+            nextRewardsTierName = if (nextRewardsTier != null ) nextRewardsTier.rewardName else "",
             nextRewardsTierProgress = 0.0.toFloat()
         )
 
         return customers
-    }
-
-    private fun getRewardsTierName(totalRewardPoints: Int): String {
-        val rewardsTier = rewards.findLast { it.points.toInt() <= totalRewardPoints }
-        if (rewardsTier == null) {
-            return ""
-        }
-        return rewardsTier.tier
     }
 
     private fun getRewards(): String {
