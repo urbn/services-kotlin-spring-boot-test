@@ -29,8 +29,9 @@ class OrderService {
 
         // Store the reward points in a read-only local variable
         val totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
-        val rewardsTier = rewards.findLast { it.points <= totalRewardPoints }
-        val nextRewardsTier = rewards.find { it.points > totalRewardPoints }
+        val rewardTierIndex = rewards.indexOfLast { it.points <= totalRewardPoints }
+        val rewardsTier = rewards[rewardTierIndex]
+        val nextRewardsTier = if (rewardTierIndex < rewards.size - 1) rewards[rewardTierIndex + 1] else null
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
@@ -39,10 +40,21 @@ class OrderService {
             rewardsTierName = if (rewardsTier != null ) rewardsTier.rewardName else "",
             nextRewardsTier = if (nextRewardsTier != null ) nextRewardsTier.tier else "",
             nextRewardsTierName = if (nextRewardsTier != null ) nextRewardsTier.rewardName else "",
-            nextRewardsTierProgress = 0.0.toFloat()
+            nextRewardsTierProgress = getNextRewardsTierProgress(totalRewardPoints, rewardsTier, nextRewardsTier)
         )
 
         return customers
+    }
+
+    private fun getNextRewardsTierProgress(totalRewardPoints: Int, currentTier: Rewards?, nextTier: Rewards?): Float {
+        if (currentTier == null || nextTier == null) {
+            return 0.0.toFloat()
+        }
+        val numerator = (totalRewardPoints - currentTier.points).toFloat()
+        // Don't assume tiers will only increase in 100 point increments
+        // Compute the difference between tiers and use that to calculate percentage
+        val denominator = (nextTier.points - currentTier.points).toFloat()
+        return numerator * 100.0.toFloat() / denominator
     }
 
     private fun getRewards(): String {
