@@ -51,6 +51,28 @@ Currently the project looks like the tree below.
  * Press Ok
  * Right click the RewardsApplication.kt and click `Run RewardsApplication`
 
+## Stubbed methods
+
+Example cURL request: 
+
+
+`/purchase`
+
+```
+curl -X POST \
+  http://localhost:9005/purchase \
+  -H 'Content-Type: application/json' \
+  -d '{
+	"email": "customer@example.com",
+	"purchaseTotal": 40
+}
+'
+```
+
+
+Folder structure: 
+
+
 ```bash
 src
 ├── main
