@@ -19,10 +19,9 @@ class RewardsController(private val orderService: OrderService) {
     @PostMapping("/purchase")
     fun purchase(@RequestBody orderRequest: OrderRequest): Map<String, Customer> {
 		// Do not process orders without an email
-		if (orderRequest.email.isNullOrEmpty()) {
-			throw InvalidOrderException("No email provided.")
-		}
-			
+        if (orderRequest.email.isNullOrEmpty()) {
+            throw InvalidOrderException("No email provided.")
+        }
         // right now the orderService returns a map of all customers once created.
         // TASK: we should return only the customer that made the request
         return orderService.purchase(orderRequest).filterKeys { it == orderRequest.email }
