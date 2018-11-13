@@ -23,8 +23,13 @@ class OrderService {
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
     }
 
+    // Returns all customers as a read-only list
+    fun getAllCustomers(): List<Customer> {
+        return customers.values.toList()
+    }
+
+    // Returns specific customer as a nullable type
     fun getCustomer(email: String): Customer? {
-        println(email)
         return customers[email]
     }
 
@@ -34,8 +39,11 @@ class OrderService {
 
         // Store the reward points in a read-only local variable
         val totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        // Check if rewards tier exists for current total points
         val rewardTierIndex = rewards.indexOfLast { it.points <= totalRewardPoints }
+        // Grab the reward tier info for the index that was found
         val rewardsTier = if (rewardTierIndex >= 0) rewards[rewardTierIndex] else null
+        // Computer the next rewards tier
         var nextRewardsTier: Rewards? = null
         if (rewardTierIndex == -1) {
             nextRewardsTier = rewards[0]

@@ -28,6 +28,11 @@ class RewardsController(private val orderService: OrderService) {
         return orderService.purchase(orderRequest).filterKeys { it == orderRequest.email }
     }
 
+    @GetMapping("/customers")
+    fun getAllCustomersRewards(): List<Customer> {
+        return orderService.getAllCustomers()
+    }
+
     @GetMapping("/customer/{email}")
     fun getCustomerRewards(@PathVariable email: String): Customer? {
         return orderService.getCustomer(email)
