@@ -28,13 +28,13 @@ class OrderService {
         // Right now, we're only storing the customer into a hash map
 
         // Store the reward points in a read-only local variable
-        var totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        val totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = totalRewardPoints,
             nextRewardsTier = "??",
-            rewardsTier = getRewardsTier(totalRewardPoints),
+            rewardsTier = getRewardsTierName(totalRewardPoints),
             nextRewardsTierName = "???",
             nextRewardsTierProgress = 0.0.toFloat()
         )
@@ -42,8 +42,11 @@ class OrderService {
         return customers
     }
 
-    private fun getRewardsTier(totalRewardPoints: Int): String {
-        val rewardsTier = rewards.first { it.points >= totalRewardPoints }
+    private fun getRewardsTierName(totalRewardPoints: Int): String {
+        val rewardsTier = rewards.findLast { it.points.toInt() <= totalRewardPoints }
+        if (rewardsTier == null) {
+            return ""
+        }
         return rewardsTier.tier
     }
 
