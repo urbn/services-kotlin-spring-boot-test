@@ -23,6 +23,11 @@ class OrderService {
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
     }
 
+    fun getCustomer(email: String): Customer? {
+        println(email)
+        return customers[email]
+    }
+
     fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
@@ -30,8 +35,14 @@ class OrderService {
         // Store the reward points in a read-only local variable
         val totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
         val rewardTierIndex = rewards.indexOfLast { it.points <= totalRewardPoints }
-        val rewardsTier = rewards[rewardTierIndex]
-        val nextRewardsTier = if (rewardTierIndex < rewards.size - 1) rewards[rewardTierIndex + 1] else null
+        val rewardsTier = if (rewardTierIndex >= 0) rewards[rewardTierIndex] else null
+        var nextRewardsTier: Rewards? = null
+        if (rewardTierIndex == -1) {
+            nextRewardsTier = rewards[0]
+        }
+        else if (rewardTierIndex < rewards.size - 1) {
+            nextRewardsTier = rewards[rewardTierIndex + 1]
+        }
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
@@ -47,13 +58,15 @@ class OrderService {
     }
 
     private fun getNextRewardsTierProgress(totalRewardPoints: Int, currentTier: Rewards?, nextTier: Rewards?): Float {
-        if (currentTier == null || nextTier == null) {
+        if (nextTier == null) {
             return 0.0.toFloat()
         }
-        val numerator = (totalRewardPoints - currentTier.points).toFloat()
+		// If total points are less than first tier, we need to use the total points as numerator
+        val numerator = if (currentTier != null) (totalRewardPoints - currentTier.points).toFloat() else totalRewardPoints.toFloat()
         // Don't assume tiers will only increase in 100 point increments
         // Compute the difference between tiers and use that to calculate percentage
-        val denominator = (nextTier.points - currentTier.points).toFloat()
+        // If total points are less than first tier, we need to use the next tier points as denominator
+        val denominator = if (currentTier != null) (nextTier.points - currentTier.points).toFloat() else nextTier.points.toFloat()
         return numerator * 100.0.toFloat() / denominator
     }
 

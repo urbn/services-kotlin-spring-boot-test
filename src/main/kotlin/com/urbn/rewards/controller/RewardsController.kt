@@ -6,6 +6,7 @@ import com.urbn.rewards.models.Rewards
 import com.urbn.rewards.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -25,6 +26,11 @@ class RewardsController(private val orderService: OrderService) {
         // right now the orderService returns a map of all customers once created.
         // TASK: we should return only the customer that made the request
         return orderService.purchase(orderRequest).filterKeys { it == orderRequest.email }
+    }
+
+    @GetMapping("/customer/{email}")
+    fun getCustomerRewards(@PathVariable email: String): Customer? {
+        return orderService.getCustomer(email)
     }
 
     @GetMapping("/rewards")
