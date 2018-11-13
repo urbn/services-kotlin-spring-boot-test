@@ -27,16 +27,23 @@ class OrderService {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
+        // Store the reward points in a read-only local variable
+        var totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
-            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
+            rewardPoints = totalRewardPoints,
             nextRewardsTier = "??",
-            rewardsTier = "???",
+            rewardsTier = getRewardsTier(totalRewardPoints),
             nextRewardsTierName = "???",
             nextRewardsTierProgress = 0.0.toFloat()
         )
 
         return customers
+    }
+
+    private fun getRewardsTier(totalRewardPoints: Int): String {
+        return "??"
     }
 
     private fun getRewards(): String {
