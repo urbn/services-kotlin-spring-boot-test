@@ -37,4 +37,39 @@ We will be implementing a rewards service. Here is the list of rewards. You'll f
 * For bonus points, add error handling and unit tests.
 
 # Given:
+Currently the project looks like the tree below.
 
+All of the main logic should go into the RewardsService
+
+The RewardsController the entrypoint of the web application. That is where you'll find 
+the endpoints, e.g. `/purchase`
+
+Some of the endpoints have been stubbed out for convenience.
+
+How to run: 
+
+Import the project into Intellij (File -> New Project From Existing Sources -> Choose the directory -> Press Ok)
+
+Right click the RewardsApplication.kt and click `Run RewardsApplication`
+
+```bash
+src
+├── main
+│   ├── kotlin
+│   │   └── com
+│   │       └── urbn
+│   │           └── rewards
+│   │               ├── RewardsApplication.kt
+│   │               ├── controller
+│   │               │   └── RewardsController.kt
+│   │               ├── models
+│   │               │   ├── Customer.kt
+│   │               │   ├── OrderRequest.kt
+│   │               │   └── Rewards.kt
+│   │               └── service
+│   │                   └── OrderService.kt
+│   └── resources
+│       ├── Rewards.kt
+│       ├── application.properties
+│  
+```

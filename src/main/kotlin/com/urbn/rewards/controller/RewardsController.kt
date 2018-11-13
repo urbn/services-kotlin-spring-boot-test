@@ -4,17 +4,15 @@ import com.urbn.rewards.models.Customer
 import com.urbn.rewards.models.OrderRequest
 import com.urbn.rewards.models.Rewards
 import com.urbn.rewards.service.OrderService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
+// RestController denotes that this class has web functionality
+// The constructor value (orderService) is initialized through dependency injection (Spring magic)
 @RestController
-class RewardsController {
-
-    @Autowired
-    lateinit var orderService: OrderService
+class RewardsController(private val orderService: OrderService) {
 
     @PostMapping("/purchase")
     fun purchase(@RequestBody orderRequest: OrderRequest): Map<String, Customer> {
