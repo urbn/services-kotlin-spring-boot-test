@@ -43,7 +43,8 @@ class OrderService {
     }
 
     private fun getRewardsTier(totalRewardPoints: Int): String {
-        return "??"
+        val rewardsTier = rewards.first { it.points >= totalRewardPoints }
+        return rewardsTier.tier
     }
 
     private fun getRewards(): String {
