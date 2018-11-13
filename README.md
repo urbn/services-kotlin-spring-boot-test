@@ -20,14 +20,11 @@ We will be implementing a rewards service. Here is the list of rewards. You'll f
     ]
     ``` 
 
-# Git Instructions:
+# Implementation Instructions
 * [Fork this repo.](https://help.github.com/articles/fork-a-repo/)
 * Use incremental commits on a story branch to show how you arrived at your solutions.
 * Push your story branch to your fork.
 * [Issue a pull request](https://help.github.com/articles/using-pull-requests/) against the master branch of this repo.
-
-
-# Implementation Instructions
 * Design and implement the following endpoints.
     * **Endpoint 1:**
         * Accept a customer's order data: **email adress**  (ex. "customer01@gmail.com") and **order total** (ex. 100.80).
