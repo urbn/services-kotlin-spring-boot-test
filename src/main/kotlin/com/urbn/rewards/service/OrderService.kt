@@ -33,24 +33,16 @@ class OrderService {
         return customers[email]
     }
 
-    fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
+	fun deleteCustomer(email: String) {
+		if (customers.contains(email)) customers.remove(email)
+	}
+
+	fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
         // Store the reward points in a read-only local variable
-        val totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
-        // Check if rewards tier exists for current total points
-        val rewardTierIndex = rewards.indexOfLast { it.points <= totalRewardPoints }
-        // Grab the reward tier info for the index that was found
-        val rewardsTier = if (rewardTierIndex >= 0) rewards[rewardTierIndex] else null
-        // Computer the next rewards tier
-        var nextRewardsTier: Rewards? = null
-        if (rewardTierIndex == -1) {
-            nextRewardsTier = rewards[0]
-        }
-        else if (rewardTierIndex < rewards.size - 1) {
-            nextRewardsTier = rewards[rewardTierIndex + 1]
-        }
+        val (totalRewardPoints, rewardsTier, nextRewardsTier, progress) = getRewardsData(orderRequest.purchaseTotal.toDouble())
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
@@ -59,11 +51,34 @@ class OrderService {
             rewardsTierName = if (rewardsTier != null ) rewardsTier.rewardName else "",
             nextRewardsTier = if (nextRewardsTier != null ) nextRewardsTier.tier else "",
             nextRewardsTierName = if (nextRewardsTier != null ) nextRewardsTier.rewardName else "",
-            nextRewardsTierProgress = getNextRewardsTierProgress(totalRewardPoints, rewardsTier, nextRewardsTier)
+            nextRewardsTierProgress = progress
         )
 
         return customers
     }
+
+    data class RewardData(val totalPoints: Int, val rewardsTier: Rewards?, val nextTier: Rewards?, val progress: Float)
+    private fun getRewardsData(purchaseTotal: Double): RewardData {
+
+        val totalRewardPoints = Math.floor(purchaseTotal).toInt()
+
+        // Check if rewards tier exists for current total points
+        val rewardTierIndex = rewards.indexOfLast { it.points <= totalRewardPoints }
+
+        // Grab the reward tier info for the index that was found
+        val rewardsTier = if (rewardTierIndex >= 0) rewards[rewardTierIndex] else null
+
+        // Compute the next rewards tier
+        var nextRewardsTier: Rewards? = null
+        if (rewardTierIndex == -1) {
+            nextRewardsTier = rewards[0]
+        }
+        else if (rewardTierIndex < rewards.size - 1) {
+            nextRewardsTier = rewards[rewardTierIndex + 1]
+        }
+		val progress = getNextRewardsTierProgress(totalRewardPoints, rewardsTier, nextRewardsTier)
+        return RewardData(totalRewardPoints, rewardsTier, nextRewardsTier, progress)
+	}
 
     private fun getNextRewardsTierProgress(totalRewardPoints: Int, currentTier: Rewards?, nextTier: Rewards?): Float {
         if (nextTier == null) {

@@ -5,6 +5,7 @@ import com.urbn.rewards.models.OrderRequest
 import com.urbn.rewards.models.Rewards
 import com.urbn.rewards.service.OrderService
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -36,6 +37,15 @@ class RewardsController(private val orderService: OrderService) {
     @GetMapping("/customer/{email}")
     fun getCustomerRewards(@PathVariable email: String): Customer? {
         return orderService.getCustomer(email)
+    }
+
+    @DeleteMapping("/customer/{email}")
+    fun deleteCustomer(@PathVariable email: String) {
+		// Do not process orders without an email
+        if (email.isNullOrEmpty()) {
+            throw InvalidOrderException("No email provided.")
+        }
+        return orderService.deleteCustomer(email)
     }
 
     @GetMapping("/rewards")
