@@ -41,10 +41,6 @@ class RewardsController(private val orderService: OrderService) {
 
     @DeleteMapping("/customer/{email}")
     fun deleteCustomer(@PathVariable email: String) {
-		// Do not process orders without an email
-        if (email.isNullOrEmpty()) {
-            throw InvalidOrderException("No email provided.")
-        }
         return orderService.deleteCustomer(email)
     }
 

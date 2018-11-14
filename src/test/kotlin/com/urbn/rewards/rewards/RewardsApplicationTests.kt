@@ -28,7 +28,7 @@ class RewardsApplicationTests {
 	
 	@Before
 	fun setupOrder() {
-		createOrder("joeuser@someisp.com", 130)
+        createOrder("joeuser@someisp.com", 130)
 	}
 
 	@After
@@ -39,76 +39,75 @@ class RewardsApplicationTests {
 
 	@Test
 	fun customerGetSucceeds() {
-		val result = testRestTemplate.getForEntity("/customer/joeuser@someisp.com", Customer::class.java)
-		assertNotNull(result)
-		assertEquals(HttpStatus.OK, result?.statusCode)
-		assertEquals("joeuser@someisp.com", result?.body?.email)
+        val result = testRestTemplate.getForEntity("/customer/joeuser@someisp.com", Customer::class.java)
+        assertNotNull(result)
+        assertEquals(HttpStatus.OK, result?.statusCode)
+        assertEquals("joeuser@someisp.com", result?.body?.email)
 	}
-	
+
 	@Test
 	fun customersListSucceeds() {		
-		var result = testRestTemplate.exchange("/customers", HttpMethod.GET, null,
-			object: ParameterizedTypeReference<List<Customer>?>() {})
+        var result = testRestTemplate.exchange("/customers", HttpMethod.GET, null,
+		    object: ParameterizedTypeReference<List<Customer>?>() {})
 		
-		assertNotNull(result)
-		assertEquals(HttpStatus.OK, result?.statusCode)
-		assertEquals(1, result?.body?.size)
-		var firstCustomer = result?.body?.first()
-		assertEquals("joeuser@someisp.com", firstCustomer?.email)
-		assertEquals(130, firstCustomer?.rewardPoints)
-		assertEquals("A", firstCustomer?.rewardsTier)
-		assertEquals("5% off purchase", firstCustomer?.rewardsTierName)
-		assertEquals("B", firstCustomer?.nextRewardsTier)
-		assertEquals("10% off purchase", firstCustomer?.nextRewardsTierName)
-		assertEquals(30.0.toFloat(), firstCustomer?.nextRewardsTierProgress)
+        assertNotNull(result)
+        assertEquals(HttpStatus.OK, result?.statusCode)
+        assertEquals(1, result?.body?.size)
+        var firstCustomer = result?.body?.first()
+        assertEquals("joeuser@someisp.com", firstCustomer?.email)
+        assertEquals(130, firstCustomer?.rewardPoints)
+        assertEquals("A", firstCustomer?.rewardsTier)
+        assertEquals("5% off purchase", firstCustomer?.rewardsTierName)
+        assertEquals("B", firstCustomer?.nextRewardsTier)
+        assertEquals("10% off purchase", firstCustomer?.nextRewardsTierName)
+        assertEquals(30.0.toFloat(), firstCustomer?.nextRewardsTierProgress)
 
-		createOrder("ann@someisp.com", 679)
+        createOrder("ann@someisp.com", 679)
 		
-		result = testRestTemplate.exchange("/customers", HttpMethod.GET, null,
-			object: ParameterizedTypeReference<List<Customer>?>() {})
-		
-		assertNotNull(result)
-		assertEquals(HttpStatus.OK, result?.statusCode)
-		assertEquals(2, result?.body?.size)
-		firstCustomer = result?.body?.first()
-		assertEquals("ann@someisp.com", firstCustomer?.email)
-		assertEquals(679, firstCustomer?.rewardPoints)
-		assertEquals("F", firstCustomer?.rewardsTier)
-		assertEquals("30% off purchase", firstCustomer?.rewardsTierName)
-		assertEquals("G", firstCustomer?.nextRewardsTier)
-		assertEquals("35% off purchase", firstCustomer?.nextRewardsTierName)
-		assertEquals(79.0.toFloat(), firstCustomer?.nextRewardsTierProgress)
-	}			
+        result = testRestTemplate.exchange("/customers", HttpMethod.GET, null,
+            object: ParameterizedTypeReference<List<Customer>?>() {})
 
-	@Test
-	fun purchaseSucceeds() {
-		val result = createOrder("ann@someisp.com", 679)
-		assertNotNull(result)
-		assertEquals(HttpStatus.OK, result.statusCode)
-		assertEquals(1, result.body?.size)
-	}
+        assertNotNull(result)
+        assertEquals(HttpStatus.OK, result?.statusCode)
+        assertEquals(2, result?.body?.size)
+        firstCustomer = result?.body?.first()
+        assertEquals("ann@someisp.com", firstCustomer?.email)
+        assertEquals(679, firstCustomer?.rewardPoints)
+        assertEquals("F", firstCustomer?.rewardsTier)
+        assertEquals("30% off purchase", firstCustomer?.rewardsTierName)
+        assertEquals("G", firstCustomer?.nextRewardsTier)
+        assertEquals("35% off purchase", firstCustomer?.nextRewardsTierName)
+        assertEquals(79.0.toFloat(), firstCustomer?.nextRewardsTierProgress)
+    }		
 
-	@Test
-	fun purchaseFailsWithoutValidEmail() {
-		val anOrder = OrderRequest(email = "", purchaseTotal=679)
-		val result = testRestTemplate.postForEntity("/purchase", anOrder, HashMap::class.java)		
-		assertNotNull(result)
-		assertEquals(HttpStatus.BAD_REQUEST, result.statusCode)
-	}
+    @Test
+    fun purchaseSucceeds() {
+        val result = createOrder("ann@someisp.com", 679)
+        assertNotNull(result)
+        assertEquals(HttpStatus.OK, result.statusCode)
+        assertEquals(1, result.body?.size)
+    }
 
-	@Test
-	fun deleteCustomerSucceeds() {
-		testRestTemplate.delete("/customer/joeuser@someisp.com")
-		val result = testRestTemplate.getForEntity("/customer/joeuser@someisp.com", Customer::class.java)
-		assertNotNull(result)
-		assertEquals(HttpStatus.OK, result?.statusCode)
-		assertNull(result?.body?.email)
-	}
+    @Test
+    fun purchaseFailsWithoutValidEmail() {
+        val anOrder = OrderRequest(email = "", purchaseTotal=679)
+        val result = testRestTemplate.postForEntity("/purchase", anOrder, HashMap::class.java)		
+        assertNotNull(result)
+        assertEquals(HttpStatus.BAD_REQUEST, result.statusCode)
+    }
 
-	private fun createOrder(orderEmail: String, orderTotal: Int): ResponseEntity<HashMap<*,*>> {
-		val anotherOrder = OrderRequest(email = orderEmail, purchaseTotal=orderTotal)
-		return testRestTemplate.postForEntity("/purchase", anotherOrder, HashMap::class.java)
-	}
-	
+    @Test
+    fun deleteCustomerSucceeds() {
+        testRestTemplate.delete("/customer/joeuser@someisp.com")
+        val result = testRestTemplate.getForEntity("/customer/joeuser@someisp.com", Customer::class.java)
+        assertNotNull(result)
+        assertEquals(HttpStatus.OK, result?.statusCode)
+        assertNull(result?.body?.email)
+    }
+
+    private fun createOrder(orderEmail: String, orderTotal: Int): ResponseEntity<HashMap<*,*>> {
+        val anotherOrder = OrderRequest(email = orderEmail, purchaseTotal=orderTotal)
+        return testRestTemplate.postForEntity("/purchase", anotherOrder, HashMap::class.java)
+    }
 }
 

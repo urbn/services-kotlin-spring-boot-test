@@ -34,7 +34,7 @@ class OrderService {
     }
 
 	fun deleteCustomer(email: String) {
-		if (customers.contains(email)) customers.remove(email)
+        if (customers.contains(email)) customers.remove(email)
 	}
 
 	fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
