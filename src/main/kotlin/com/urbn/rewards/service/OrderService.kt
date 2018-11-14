@@ -33,7 +33,7 @@ class OrderService {
         return customers[email]
     }
 
-	fun deleteCustomer(email: String) {
+    fun deleteCustomer(email: String) {
         if (customers.contains(email)) customers.remove(email)
 	}
 

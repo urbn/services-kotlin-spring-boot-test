@@ -20,7 +20,7 @@ class RewardsController(private val orderService: OrderService) {
 
     @PostMapping("/purchase")
     fun purchase(@RequestBody orderRequest: OrderRequest): Map<String, Customer> {
-		// Do not process orders without an email
+        // Do not process orders without an email
         if (orderRequest.email.isNullOrEmpty()) {
             throw InvalidOrderException("No email provided.")
         }
