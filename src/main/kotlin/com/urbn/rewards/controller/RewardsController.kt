@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 class RewardsController(private val orderService: OrderService) {
 
     @PostMapping("/purchase")
-    fun purchase(@RequestBody orderRequest: OrderRequest): Map<String, Customer> {
+    fun purchase(@RequestBody orderRequest: OrderRequest): Customer {
         // right now the orderService returns a map of all customers once created.
         // TASK: we should return only the customer that made the request
         return orderService.purchase(orderRequest)

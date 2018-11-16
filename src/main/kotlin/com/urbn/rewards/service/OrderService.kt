@@ -6,6 +6,8 @@ import com.urbn.rewards.models.OrderRequest
 import com.urbn.rewards.models.Rewards
 import org.springframework.stereotype.Service
 
+import java.util.HashMap
+
 @Service
 class OrderService {
 
@@ -23,20 +25,45 @@ class OrderService {
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
     }
 
-    fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
-        // Implement purchase endpoint logic here
-        // Right now, we're only storing the customer into a hash map
+    fun purchase(orderRequest: OrderRequest): Customer {
+        // Consider doing a ternary conditional to update the variables
+        // Current approach isn't as clean as I'd like. Research more
+        // Update existing customer info
+        var updatedRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        var updatedRewardsTier = ""
+        var updatedNextRewardsTier = rewards[0].tier
+        var updatedNextRewardsTierName = rewards[0].rewardName
 
-        customers[orderRequest.email] = Customer(
+        if (customers[orderRequest.email] != null) {
+            var existingCustomer = customers[orderRequest.email]
+
+            updatedRewardPoints = (existingCustomer?.rewardPoints ?: 0) + Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        }
+
+        var updatedNextRewardsTierProgress = ((updatedRewardPoints%100).toFloat())/100
+
+        // RewardsTier, NextRewardsTier, NextRewardsTierName,
+        // are only populated once the customer qualifies for
+        // at least the first tier of reward. It remains blank otherwise
+        if (updatedRewardPoints >= 100) {
+            var rewardsIndex = (updatedRewardPoints/100) - 1
+            updatedRewardsTier = rewards[rewardsIndex].tier
+            updatedNextRewardsTier = rewards[rewardsIndex + 1].tier
+            updatedNextRewardsTierName = rewards[rewardsIndex + 1].rewardName
+        }
+
+        val currentCustomer = Customer(
             email = orderRequest.email,
-            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = "??",
-            rewardsTier = "???",
-            nextRewardsTierName = "???",
-            nextRewardsTierProgress = 0.0.toFloat()
+            rewardPoints = updatedRewardPoints,
+            nextRewardsTier = updatedNextRewardsTier,
+            rewardsTier = updatedRewardsTier,
+            nextRewardsTierName = updatedNextRewardsTierName,
+            nextRewardsTierProgress = updatedNextRewardsTierProgress.toFloat()
         )
 
-        return customers
+        customers[orderRequest.email] = currentCustomer
+
+        return currentCustomer
     }
 
     private fun getRewards(): String {
@@ -55,6 +82,8 @@ class OrderService {
             ]
             """.trimIndent()
     }
+
+    // Helper functions
 
 
 }
