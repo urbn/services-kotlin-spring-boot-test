@@ -14,6 +14,8 @@ class OrderService {
     // Hard coded list of rewards. See the getRewards function below
     final var rewards: Array<Rewards>
 
+    final var maxRewardPoints: Int
+
     // A list of in memory customers keyed off of the e-mail
     private val customers = HashMap<String, Customer>()
 
@@ -23,6 +25,7 @@ class OrderService {
     init {
         val rewardString = getRewards()
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
+        maxRewardPoints = rewards[rewards.size-1].points
     }
 
     fun purchase(orderRequest: OrderRequest): Customer {
@@ -31,25 +34,31 @@ class OrderService {
         // Update existing customer info
         var updatedRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
         var updatedRewardsTier = ""
-        var updatedNextRewardsTier = rewards[0].tier
-        var updatedNextRewardsTierName = rewards[0].rewardName
+        var updatedNextRewardsTier = ""
+        var updatedNextRewardsTierName = ""
+        var updatedNextRewardsTierProgress = 0.0F
 
         if (customers[orderRequest.email] != null) {
             var existingCustomer = customers[orderRequest.email]
 
-            updatedRewardPoints = (existingCustomer?.rewardPoints ?: 0) + Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+            updatedRewardPoints += (existingCustomer?.rewardPoints ?: 0)
         }
 
-        var updatedNextRewardsTierProgress = ((updatedRewardPoints%100).toFloat())/100
-
-        // RewardsTier, NextRewardsTier, NextRewardsTierName,
-        // are only populated once the customer qualifies for
-        // at least the first tier of reward. It remains blank otherwise
-        if (updatedRewardPoints >= 100) {
+        if (updatedRewardPoints < maxRewardPoints) {
             var rewardsIndex = (updatedRewardPoints/100) - 1
+
+            // Error handling for surpassing maximum rewards offered
+            // Error handling for before the customer reaches first tier
+            if (rewardsIndex > rewards.size - 1) {
+                rewardsIndex = rewards.size - 1
+            } else if (rewardsIndex < 0) {
+                rewardsIndex = 0
+            }
+
             updatedRewardsTier = rewards[rewardsIndex].tier
             updatedNextRewardsTier = rewards[rewardsIndex + 1].tier
             updatedNextRewardsTierName = rewards[rewardsIndex + 1].rewardName
+            updatedNextRewardsTierProgress = ((updatedRewardPoints%100).toFloat())/100
         }
 
         val currentCustomer = Customer(
@@ -82,8 +91,6 @@ class OrderService {
             ]
             """.trimIndent()
     }
-
-    // Helper functions
 
 
 }
