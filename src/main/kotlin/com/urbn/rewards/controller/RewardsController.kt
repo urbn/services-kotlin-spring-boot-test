@@ -7,6 +7,7 @@ import com.urbn.rewards.service.OrderService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 // RestController denotes that this class has web functionality
@@ -25,5 +26,17 @@ class RewardsController(private val orderService: OrderService) {
     fun getRewardsTiers(): Array<Rewards> {
         return orderService.rewards
     }
+
+    @GetMapping("/customer-reward/email/{email}")
+    fun getCustomerRewards(@PathVariable email: String ): Rewards {
+        return orderService.getCustomerReward(email)
+    }
+
+    /*
+    @GetMapping("/all-customer-rewards")
+    fun getAllCustomerRewards(): Array<Rewards> {
+        return
+    }
+    */
 }
 

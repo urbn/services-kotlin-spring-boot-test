@@ -14,6 +14,7 @@ class OrderService {
     // Hard coded list of rewards. See the getRewards function below
     final var rewards: Array<Rewards>
 
+    // The reward point correlating to the highest tier achievable
     final var maxRewardPoints: Int
 
     // A list of in memory customers keyed off of the e-mail
@@ -29,14 +30,14 @@ class OrderService {
     }
 
     fun purchase(orderRequest: OrderRequest): Customer {
-        // Consider doing a ternary conditional to update the variables
-        // Current approach isn't as clean as I'd like. Research more
         // Update existing customer info
+        // Below is the base case
         var updatedRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
         var updatedRewardsTier = ""
+        var updatedRewardsName = ""
         var updatedNextRewardsTier = ""
         var updatedNextRewardsTierName = ""
-        var updatedNextRewardsTierProgress = 0.0F
+        var updatedNextRewardsTierProgress: Float
 
         if (customers[orderRequest.email] != null) {
             var existingCustomer = customers[orderRequest.email]
@@ -44,35 +45,70 @@ class OrderService {
             updatedRewardPoints += (existingCustomer?.rewardPoints ?: 0)
         }
 
-        if (updatedRewardPoints < maxRewardPoints) {
+        updatedNextRewardsTierProgress = ((updatedRewardPoints%100).toFloat())/100
+
+        // Used to handle cases where customer exceeds the maximum reward
+        var maxRewardsIndex = rewards.size - 1
+
+        // Handles the case where customer qualifies for reward but hasn't
+        // reached the final tier
+        if (updatedRewardPoints in 100 until maxRewardPoints) {
             var rewardsIndex = (updatedRewardPoints/100) - 1
 
             // Error handling for surpassing maximum rewards offered
             // Error handling for before the customer reaches first tier
-            if (rewardsIndex > rewards.size - 1) {
-                rewardsIndex = rewards.size - 1
+            if (rewardsIndex > maxRewardsIndex) {
+                rewardsIndex = maxRewardsIndex
             } else if (rewardsIndex < 0) {
                 rewardsIndex = 0
             }
 
             updatedRewardsTier = rewards[rewardsIndex].tier
+            updatedRewardsName = rewards[rewardsIndex].rewardName
             updatedNextRewardsTier = rewards[rewardsIndex + 1].tier
             updatedNextRewardsTierName = rewards[rewardsIndex + 1].rewardName
             updatedNextRewardsTierProgress = ((updatedRewardPoints%100).toFloat())/100
         }
+        // Handles the case where customer reaches the final tier
+        else if (updatedRewardPoints >= maxRewardPoints) {
+            updatedRewardsTier = rewards[maxRewardsIndex].tier
+            updatedRewardsName = rewards[maxRewardsIndex].rewardName
+            updatedNextRewardsTierProgress = 0F
+        }
 
+        // Updates and return the customer's info
         val currentCustomer = Customer(
             email = orderRequest.email,
             rewardPoints = updatedRewardPoints,
-            nextRewardsTier = updatedNextRewardsTier,
             rewardsTier = updatedRewardsTier,
+            rewardsName = updatedRewardsName,
+            nextRewardsTier = updatedNextRewardsTier,
             nextRewardsTierName = updatedNextRewardsTierName,
-            nextRewardsTierProgress = updatedNextRewardsTierProgress.toFloat()
+            nextRewardsTierProgress = updatedNextRewardsTierProgress
         )
 
         customers[orderRequest.email] = currentCustomer
 
         return currentCustomer
+    }
+
+    // Returns the corresponding customer's reward info
+    fun getCustomerReward(email: String): Rewards {
+        // Non-existent customers will simply return no reward
+        // values for each field as described in the default
+        // initialization of Customer data class
+        var customerReward = Rewards()
+        val customer = customers[email]
+
+        if (customer != null) {
+            customerReward = Rewards(
+                rewardName = customer.rewardsName,
+                tier = customer.rewardsTier,
+                points = customer.rewardPoints
+            )
+        }
+
+        return customerReward
     }
 
     private fun getRewards(): String {
@@ -91,6 +127,5 @@ class OrderService {
             ]
             """.trimIndent()
     }
-
 
 }
