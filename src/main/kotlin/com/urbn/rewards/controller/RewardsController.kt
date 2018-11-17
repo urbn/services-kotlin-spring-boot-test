@@ -32,11 +32,9 @@ class RewardsController(private val orderService: OrderService) {
         return orderService.getCustomerReward(email)
     }
 
-    /*
     @GetMapping("/all-customer-rewards")
-    fun getAllCustomerRewards(): Array<Rewards> {
-        return
+    fun getAllCustomerRewards(): HashMap<String, Rewards> {
+        return orderService.getAllCustomerRewards()
     }
-    */
 }
 

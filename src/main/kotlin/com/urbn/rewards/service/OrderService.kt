@@ -15,7 +15,7 @@ class OrderService {
     final var rewards: Array<Rewards>
 
     // The reward point correlating to the highest tier achievable
-    final var maxRewardPoints: Int
+    private val maxRewardPoints: Int
 
     // A list of in memory customers keyed off of the e-mail
     private val customers = HashMap<String, Customer>()
@@ -47,12 +47,19 @@ class OrderService {
 
         updatedNextRewardsTierProgress = ((updatedRewardPoints%100).toFloat())/100
 
+
         // Used to handle cases where customer exceeds the maximum reward
         var maxRewardsIndex = rewards.size - 1
 
+        // Handles earliest case where customer doesn't qualify for
+        // any rewards yet
+        if (updatedRewardPoints < 100) {
+            updatedNextRewardsTier = rewards[0].tier
+            updatedNextRewardsTierName = rewards[0].rewardName
+        }
         // Handles the case where customer qualifies for reward but hasn't
         // reached the final tier
-        if (updatedRewardPoints in 100 until maxRewardPoints) {
+        else if (updatedRewardPoints in 100 until maxRewardPoints) {
             var rewardsIndex = (updatedRewardPoints/100) - 1
 
             // Error handling for surpassing maximum rewards offered
@@ -75,6 +82,7 @@ class OrderService {
             updatedRewardsName = rewards[maxRewardsIndex].rewardName
             updatedNextRewardsTierProgress = 0F
         }
+
 
         // Updates and return the customer's info
         val currentCustomer = Customer(
@@ -109,6 +117,23 @@ class OrderService {
         }
 
         return customerReward
+    }
+
+    // Return all customer's rewards
+    fun getAllCustomerRewards(): HashMap<String, Rewards> {
+        var customersRewards = HashMap<String, Rewards>()
+
+        for ((key, value) in customers) {
+
+            val rewards = Rewards(
+                    rewardName = value.rewardsName,
+                    tier = value.rewardsTier,
+                    points = value.rewardPoints
+            )
+            customersRewards[key] = rewards
+        }
+
+        return customersRewards
     }
 
     private fun getRewards(): String {
