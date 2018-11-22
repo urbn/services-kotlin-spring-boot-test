@@ -23,20 +23,23 @@ class OrderService {
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
     }
 
-    fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
+    fun purchase(orderRequest: OrderRequest): Customer {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
-        customers[orderRequest.email] = Customer(
+        val currentCustomer = Customer(
             email = orderRequest.email,
             rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
             nextRewardsTier = "??",
             rewardsTier = "???",
+            rewardsTierName = "???",
             nextRewardsTierName = "???",
             nextRewardsTierProgress = 0.0.toFloat()
         )
 
-        return customers
+        customers[orderRequest.email] = currentCustomer
+
+        return currentCustomer
     }
 
     private fun getRewards(): String {
@@ -56,5 +59,37 @@ class OrderService {
             """.trimIndent()
     }
 
+    // Implement reward endpoint logic here
+    fun reward(email: String): Rewards {
+
+        var customerReward = Rewards()
+        val customer = customers[email]
+
+        if (customer != null) {
+            customerReward = Rewards(
+                    rewardName = customer.nextRewardsTier,
+                    tier = customer.rewardsTier,
+                    points = customer.rewardPoints
+            )
+        }
+
+        return customerReward
+    }
+
+    // Implement allRewards endpoint logic here
+    fun allRewards(): HashMap<String, Rewards> {
+        val customersRewards = HashMap<String, Rewards>()
+
+        for ((key, value) in customers) {
+            val rewards = Rewards(
+                    rewardName = value.rewardsTierName,
+                    tier = value.rewardsTier,
+                    points = value.rewardPoints
+            )
+            customersRewards[key] = rewards
+        }
+
+        return customersRewards
+    }
 
 }
