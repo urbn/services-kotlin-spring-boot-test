@@ -12,6 +12,8 @@ class OrderService {
     // Hard coded list of rewards. See the getRewards function below
     final var rewards: Array<Rewards>
 
+    private val maxRewardPoints: Int
+
     // A list of in memory customers keyed off of the e-mail
     private val customers = HashMap<String, Customer>()
 
@@ -21,20 +23,70 @@ class OrderService {
     init {
         val rewardString = getRewards()
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
+        maxRewardPoints = rewards[rewards.size-1].points
     }
 
     fun purchase(orderRequest: OrderRequest): Customer {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
+        var totalRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        var totalRewardsTier = ""
+        var totalRewardsTierName = ""
+        var totalNextRewardsTier = ""
+        var totalNextRewardsTierName = ""
+        var totalNextRewardsTierProgress: Float
+
+        if (customers[orderRequest.email] != null) {
+            val existingCustomer = customers[orderRequest.email]
+
+            totalRewardPoints += (existingCustomer?.rewardPoints ?: 0)
+        }
+
+        totalNextRewardsTierProgress = ((totalRewardPoints%100).toFloat())/100
+
+        val maxRewardsIndex = rewards.size - 1
+
+        when {
+            // no rewards
+            totalRewardPoints < 100 -> {
+                totalNextRewardsTier = rewards[0].tier
+                totalNextRewardsTierName = rewards[0].rewardName
+            }
+            // 100 - 1000
+            totalRewardPoints in 100 until maxRewardPoints -> {
+                var rewardsIndex = (totalRewardPoints/100) - 1
+
+                if (rewardsIndex > maxRewardsIndex) {
+                    rewardsIndex = maxRewardsIndex
+                } else if (rewardsIndex < 0) {
+                    rewardsIndex = 0
+                }
+
+                totalRewardsTier = rewards[rewardsIndex].tier
+                totalRewardsTierName = rewards[rewardsIndex].rewardName
+                totalNextRewardsTier = rewards[rewardsIndex + 1].tier
+                totalNextRewardsTierName = rewards[rewardsIndex + 1].rewardName
+                totalNextRewardsTierProgress = ((totalRewardPoints%100).toFloat())/100
+            }
+            // > 1000
+            totalRewardPoints >= maxRewardPoints -> {
+                totalRewardsTier = rewards[maxRewardsIndex].tier
+                totalRewardsTierName = rewards[maxRewardsIndex].rewardName
+                totalNextRewardsTier = "N/A"
+                totalNextRewardsTierName = "N/A"
+                totalNextRewardsTierProgress = 0F
+            }
+        }
+
         val currentCustomer = Customer(
             email = orderRequest.email,
-            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = "??",
-            rewardsTier = "???",
-            rewardsTierName = "???",
-            nextRewardsTierName = "???",
-            nextRewardsTierProgress = 0.0.toFloat()
+            rewardPoints = totalRewardPoints,
+            rewardsTier = totalRewardsTier,
+            rewardsTierName = totalRewardsTierName,
+            nextRewardsTier = totalNextRewardsTier,
+            nextRewardsTierName = totalNextRewardsTierName,
+            nextRewardsTierProgress = totalNextRewardsTierProgress
         )
 
         customers[orderRequest.email] = currentCustomer
@@ -60,36 +112,13 @@ class OrderService {
     }
 
     // Implement reward endpoint logic here
-    fun reward(email: String): Rewards {
-
-        var customerReward = Rewards()
-        val customer = customers[email]
-
-        if (customer != null) {
-            customerReward = Rewards(
-                    rewardName = customer.nextRewardsTier,
-                    tier = customer.rewardsTier,
-                    points = customer.rewardPoints
-            )
-        }
-
-        return customerReward
+    fun reward(email: String): Customer? {
+        return customers[email]
     }
 
     // Implement allRewards endpoint logic here
-    fun allRewards(): HashMap<String, Rewards> {
-        val customersRewards = HashMap<String, Rewards>()
-
-        for ((key, value) in customers) {
-            val rewards = Rewards(
-                    rewardName = value.rewardsTierName,
-                    tier = value.rewardsTier,
-                    points = value.rewardPoints
-            )
-            customersRewards[key] = rewards
-        }
-
-        return customersRewards
+    fun allRewards(): List<Customer> {
+        return customers.values.toList()
     }
 
 }

@@ -26,13 +26,13 @@ class RewardsController(private val orderService: OrderService) {
 
     // Get reward
     @GetMapping("/reward/{email}")
-    fun getCustomerRewards(@PathVariable email: String ): Rewards {
+    fun getCustomerRewards(@PathVariable email: String ): Customer? {
         return orderService.reward(email)
     }
 
     // Get all rewards
     @GetMapping("/allRewards")
-    fun getAllCustomerRewards(): HashMap<String, Rewards> {
+    fun getAllCustomersRewards(): List<Customer> {
         return orderService.allRewards()
     }
 }
