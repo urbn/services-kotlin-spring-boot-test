@@ -1,0 +1,3 @@
+curl -X GET http://localhost:8080/allRewards -H 'Content-Type: application/json'
+
+curl -X POST http://localhost:8080/purchase -H "Content-Type: application/json" -d "{\"email\": \"customer@example.com\",\"purchaseTotal\": 40}"
