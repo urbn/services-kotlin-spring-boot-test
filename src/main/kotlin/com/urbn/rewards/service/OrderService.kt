@@ -2,6 +2,7 @@ package com.urbn.rewards.service
 
 import com.google.gson.Gson
 import com.urbn.rewards.models.Customer
+import com.urbn.rewards.models.CustomerRewards
 import com.urbn.rewards.models.OrderRequest
 import com.urbn.rewards.models.Rewards
 import org.springframework.stereotype.Service
@@ -40,7 +41,17 @@ class OrderService {
                 nextRewardsTierProgress = (Math.round(curRewards[0].points.toFloat() / curRewards[1].points.toFloat() * 100.0) / 100.0).toFloat()
         )
 
-        println(getRewardPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()))
+        return customers
+    }
+
+
+    fun getCustomerRewards(CustomerRewards: CustomerRewards): Customer? {
+
+        return getAllCustomersRewards()[CustomerRewards.email]
+    }
+
+    fun getAllCustomersRewards(): Map<String, Customer> {
+
         return customers
     }
 
