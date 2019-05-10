@@ -37,7 +37,7 @@ class OrderService {
                 rewardsTierName = curRewards[0].rewardName,
                 nextRewardsTier = curRewards[1].tier,
                 nextRewardsTierName = curRewards[1].rewardName,
-                nextRewardsTierProgress = (curRewards[0].points.toFloat() / curRewards[1].points.toFloat())
+                nextRewardsTierProgress = (Math.round(curRewards[0].points.toFloat() / curRewards[1].points.toFloat() * 100.0) / 100.0).toFloat()
         )
 
         println(getRewardPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()))
@@ -46,8 +46,8 @@ class OrderService {
 
     fun setRewardPoints(rewardPoints: Int): String {
 
-        val minPoints = 100
-        val maxPoints = 1000
+        val minPoints = rewards[0].points
+        val maxPoints = rewards[rewards.size - 1].points
         val returnData: String
 
         returnData =
