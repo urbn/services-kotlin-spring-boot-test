@@ -27,16 +27,70 @@ class OrderService {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
+        val rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
+        val curRewards = gson.fromJson(setRewardPoints(rewardPoints), Array<Rewards>::class.java)
+
         customers[orderRequest.email] = Customer(
-            email = orderRequest.email,
-            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = "??",
-            rewardsTier = "???",
-            nextRewardsTierName = "???",
-            nextRewardsTierProgress = 0.0.toFloat()
+                email = orderRequest.email,
+                rewardPoints = rewardPoints,
+                rewardsTier = curRewards[0].tier,
+                rewardsTierName = curRewards[0].rewardName,
+                nextRewardsTier = curRewards[1].tier,
+                nextRewardsTierName = curRewards[1].rewardName,
+                nextRewardsTierProgress = (curRewards[0].points.toFloat() / curRewards[1].points.toFloat())
         )
 
+        println(getRewardPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()))
         return customers
+    }
+
+    fun setRewardPoints(rewardPoints: Int): String {
+
+        val minPoints = 100
+        val maxPoints = 1000
+        val returnData: String
+
+        returnData =
+                when {
+                    (rewardPoints < minPoints) -> """
+            [
+                { "tier": "", "rewardName": "", "points": $rewardPoints },
+                { "tier": "A", "rewardName": "5% off purchase", "points": 100 },
+            ]
+            """
+                    (rewardPoints >= maxPoints) -> """
+            [
+                { "tier": "J", "rewardName": "50% off purchase", "points": 1000 },
+                { "tier": "J", "rewardName": "50% off purchase", "points": 1000 }
+            ]
+            """
+                    else -> (getRewardPoints(rewardPoints))
+
+                }
+
+
+        return returnData.trimIndent()
+    }
+
+    fun getRewardPoints(rewardPoints: Int): String {
+        var returnData = ""
+
+        for (i in 0 until (rewards.size)) {
+            if (returnData == "") {
+                returnData = """{ "tier": "${rewards[i].tier}", "rewardName": "${rewards[i].rewardName}", "points": ${rewards[i].points} }"""
+            } else {
+                if (rewards[i].points > rewardPoints) {
+                    returnData = """$returnData, { "tier": "${rewards[i].tier}", "rewardName": "${rewards[i].rewardName}", "points": ${rewards[i].points} }"""
+                    break
+                } else {
+                    returnData = """{ "tier": "${rewards[i].tier}", "rewardName": "${rewards[i].rewardName}", "points": ${rewards[i].points} }"""
+                }
+            }
+
+        }
+
+        return """[ $returnData  ]"""
+
     }
 
     private fun getRewards(): String {
