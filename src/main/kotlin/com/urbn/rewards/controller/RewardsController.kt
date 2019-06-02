@@ -18,7 +18,9 @@ class RewardsController(private val orderService: OrderService) {
     fun purchase(@RequestBody orderRequest: OrderRequest): Map<String, Customer> {
         // right now the orderService returns a map of all customers once created.
         // TASK: we should return only the customer that made the request
-        return orderService.purchase(orderRequest)
+        return orderService.purchase(orderRequest).filterKeys {
+            it == orderRequest.email
+        }
     }
 
     @GetMapping("/rewards")
