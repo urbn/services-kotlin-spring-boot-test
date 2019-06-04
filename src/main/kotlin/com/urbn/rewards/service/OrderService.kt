@@ -30,8 +30,8 @@ class OrderService {
         // declare the variables and set to base case
         var newRewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()
         var newRewardsTier = ""
-        var newNextRewardsTier = "A"
-        var newNextRewardsTierName = "5% off purchase"
+        var newNextRewardsTier = ""
+        var newNextRewardsTierName = ""
         var newNextRewardsTierProgress = (newRewardPoints / 100.0).toFloat()
 
         // check if the customer exists and if so, add existing reward points
@@ -44,8 +44,11 @@ class OrderService {
         // with the new total, round down to nearest tier point level
         val truncPointsToTier = newRewardPoints - (newRewardPoints % 100)
 
-        // check if max level is already reached
-        if (truncPointsToTier in 100..999) {
+        // get the max tier level
+        val maxTier = rewards[rewards.lastIndex]
+
+        // if below max, iterate the rewards
+        if (truncPointsToTier < maxTier.points) {
             for ( reward in rewards ) {
                 if ( reward.points == truncPointsToTier ) {
                     newRewardsTier = reward.tier
@@ -56,11 +59,9 @@ class OrderService {
                     newNextRewardsTierName = reward.rewardName
                 }
             }
-        } else if (truncPointsToTier >= 1000) {
-            newRewardsTier = "J"
+        } else {
+            newRewardsTier = maxTier.tier
             newNextRewardsTierProgress = 0.0F
-            newNextRewardsTier = ""
-            newNextRewardsTierName = ""
         }
 
         // set the customer key to the new values
@@ -76,49 +77,7 @@ class OrderService {
         // return the customer
         return getCustomer(orderRequest.email)
 
-//        // get the current customer
-//        val currentCustomer = customers[orderRequest.email]
-//
-//        // just realized I can't'
-////        currentCustomer.rewardPoints += Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-////        return currentCustomer
-//
-//        customers[orderRequest.email] = Customer(
-//                email = orderRequest.email,
-//                rewardPoints = 0,
-//                nextRewardsTier = "",
-//                rewardsTier = "",
-//                nextRewardsTierName = "",
-//                nextRewardsTierProgress = 0.0.toFloat()
-//        )
-//
-//        return getCustomer(orderRequest.email)
-
     }
-//
-//        totalRewardPoints += (existingCustomer?.rewardPoints ?: 0)
-//
-//        var rewardPoints = ""
-//        var nextRewardsTier = ""
-//        var rewardsTier = ""
-//        var nextRewardsTierName = ""
-//        var nextRewardsTierProgress: Float
-//
-//        fun rewardPoints(): Int {
-//
-//        }
-//
-//        customers[orderRequest.email] = Customer(
-//            email = orderRequest.email,
-//            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-//            nextRewardsTier = "??",
-//            rewardsTier = "???",
-//            nextRewardsTierName = "???",
-//            nextRewardsTierProgress = 0.0.toFloat()
-//        )
-//
-//        return customers
-//    }
 
     // adding functions for new endpoints
 
