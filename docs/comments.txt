@@ -1,0 +1,10 @@
+I am including in this directory a few postman requests I used for testing
+
+I added several tests to RewardsApplicationTests, although they are roughly organized
+
+This is my first foray into Kotlin -- after years of Python and JS programming it was a bit of a shock, but after some
+practice and reading through the docs, it began to click.
+
+Please let me know if you have any questions regarding my submission and thank you for consideration!
+
+Fraser Torning
