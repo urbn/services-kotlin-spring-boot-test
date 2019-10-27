@@ -59,7 +59,7 @@ Currently the project looks like the tree below.
 
 Example cURL requests tested: 
 
-`/purchase`, `/rewards/{email}`, `\rewards`
+`/purchase`, `/rewards/{email}`, `/rewards`
 
 ```
 curl -X POST http://localhost:8080/purchase -H 'Content-Type: application/json' -d '{"email": "customer@example.com", "purchaseTotal": 40 }'
