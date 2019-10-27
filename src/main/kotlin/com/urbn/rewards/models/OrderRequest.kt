@@ -1,6 +1,8 @@
 package com.urbn.rewards.models
 
+import javax.validation.constraints.Email
+
 data class OrderRequest(
-    val email: String,
-    val purchaseTotal: Int
+        @field:Email val email: String,
+        val purchaseTotal: Int
 )

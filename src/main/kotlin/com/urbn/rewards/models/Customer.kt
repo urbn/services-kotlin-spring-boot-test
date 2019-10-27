@@ -1,10 +1,11 @@
 package com.urbn.rewards.models
 
 data class Customer(
-    val email: String,
-    val rewardPoints: Int,
-    val rewardsTier: String,
-    val nextRewardsTier: String,
-    val nextRewardsTierName: String,
-    val nextRewardsTierProgress: Float
+        // changed all parameters to mutable except email (which can only be set upon object creation)
+        val email: String,
+        var rewardPoints: Int,
+        var rewardsTier: String,
+        var nextRewardsTier: String,
+        var nextRewardsTierName: String,
+        var nextRewardsTierProgress: Float
 )

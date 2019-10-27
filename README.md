@@ -57,24 +57,22 @@ Currently the project looks like the tree below.
 
 ## Stubbed methods
 
-Example cURL request: 
+Example cURL requests tested: 
 
-
-`/purchase`
+`/purchase`, `/rewards/{email}`, `\rewards`
 
 ```
-curl -X POST \
-  http://localhost:9005/purchase \
-  -H 'Content-Type: application/json' \
-  -d '{
-	"email": "customer@example.com",
-	"purchaseTotal": 40
-}
-'
+curl -X POST http://localhost:8080/purchase -H 'Content-Type: application/json' -d '{"email": "customer@example.com", "purchaseTotal": 40 }'
+curl -X POST http://localhost:8080/purchase -H 'Content-Type: application/json' -d '{"email": "barnwaldo@hotmail.com", "purchaseTotal": 240 }'
+
+curl -X GET http://localhost:8080/rewards/customer@example.com -H 'Content-Type: application/json'
+curl -X GET http://localhost:8080/rewards/barnwaldo@hotmail.com -H 'Content-Type: application/json'
+
+curl -X GET http://localhost:8080/rewards -H 'Content-Type: application/json'
 ```
 
 
-Folder structure: 
+Folder structure: (Test Class Added)
 
 
 ```bash
@@ -94,7 +92,12 @@ src
 │   │               └── service
 │   │                   └── OrderService.kt
 │   └── resources
-│       ├── Rewards.kt
 │       ├── application.properties
 │  
+|──test
+│   ├── kotlin
+│   │   └── com
+│   │       └── urbn
+│   │           └── rewards
+│   │               ├── RewardsApplicationTest.kt
 ```
