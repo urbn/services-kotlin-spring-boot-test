@@ -28,7 +28,6 @@ class RewardsController(private val orderService: OrderService) {
         return orderService.rewards
     }
 
-    // http://localhost:8080/customer?email=emailid
     @GetMapping("/customer") // value: email, defaultValue: customer@gmail.com
     fun getCustomerRewards(@RequestParam email: String): Customer? {
         return orderService.getCustomerRewardStatus(email)

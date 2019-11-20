@@ -1,0 +1,47 @@
+xsizxenjins:scripts cevherdogan$ curl -X POST   http://localhost:8080/purchase   -H 'Content-Type: application/json'   -d '{
+"email": "cevherd@gmail.com",
+"purchaseTotal": 210
+}
+' | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   589    0   534  100    55   130k  13750 --:--:-- --:--:-- --:--:--  143k
+{
+  "test@gmail.com": {
+    "email": "test@gmail.com",
+    "rewardPoints": 610,
+    "rewardsTier": "F",
+    "nextRewardsTier": "G",
+    "nextRewardsTierName": "35% off purchase",
+    "nextRewardsTierProgress": 10
+  },
+  "cevherd@gmail.com": {
+    "email": "cevherd@gmail.com",
+    "rewardPoints": 210,
+    "rewardsTier": "B",
+    "nextRewardsTier": "C",
+    "nextRewardsTierName": "15% off purchase",
+    "nextRewardsTierProgress": 10
+  },
+  "test2@gmail.com": {
+    "email": "test2@gmail.com",
+    "rewardPoints": 770,
+    "rewardsTier": "G",
+    "nextRewardsTier": "H",
+    "nextRewardsTierName": "40% off purchase",
+    "nextRewardsTierProgress": 70
+  }
+}
+xsizxenjins:scripts cevherdogan$ curl -X GET http://localhost:8080/customer?email="cevherd@gmail.com"  | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   160    0   160    0     0  40000      0 --:--:-- --:--:-- --:--:-- 40000
+{
+  "email": "cevherd@gmail.com",
+  "rewardPoints": 210,
+  "rewardsTier": "B",
+  "nextRewardsTier": "C",
+  "nextRewardsTierName": "15% off purchase",
+  "nextRewardsTierProgress": 10
+}
+

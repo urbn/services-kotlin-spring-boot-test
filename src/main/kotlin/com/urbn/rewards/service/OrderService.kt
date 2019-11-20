@@ -54,12 +54,7 @@ class OrderService {
     }
 
     fun getCustomerRewardStatus(customerEmail: String): Customer? {
-
-        for (c in customers) {
-            println(c.toString());
-        }
-
-        return customers[customerEmail]
+        return customers.get(customerEmail)
     }
 
     private fun getRewards(): String {
