@@ -30,7 +30,7 @@ class OrderService {
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
-            rewardPoints = orderRequest.purchaseTotal.toFloat(),
+            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
             nextRewardsTier = "??",
             rewardsTier = "???",
             nextRewardsTierName = "???",
