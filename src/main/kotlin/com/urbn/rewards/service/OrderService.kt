@@ -12,6 +12,9 @@ class OrderService {
     // Hard coded list of rewards. See the getRewards function below
     final var rewards: Array<Rewards>
 
+    // Next Tier Increment
+    final var NEXT_TIER_INCREMENT = 100;
+
     // A list of in memory customers keyed off of the e-mail
     private val customers = HashMap<String, Customer>()
 
@@ -43,7 +46,7 @@ class OrderService {
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = "??",
+            nextRewardsTier = getRewardsTierAndNameByPoints(100 + NEXT_TIER_INCREMENT)?.tier.toString(),
             rewardsTier = getRewardsTierAndNameByPoints(100)?.tier.toString(),
             nextRewardsTierName = getRewardsTierAndNameByPoints(100)?.rewardName.toString(),
             nextRewardsTierProgress = 0.0.toFloat()
