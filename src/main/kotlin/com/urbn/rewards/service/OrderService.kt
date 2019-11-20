@@ -12,8 +12,11 @@ class OrderService {
     // Hard coded list of rewards. See the getRewards function below
     final var rewards: Array<Rewards>
 
+    // Next Tier Increment
+    final var MODULO_PCT = 100;
+
     // A list of in memory customers keyed off of the e-mail
-    private val customers = HashMap<String, Customer>()
+    val customers = HashMap<String, Customer>()
 
     private val gson = Gson()
 
@@ -23,6 +26,17 @@ class OrderService {
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
     }
 
+    fun getRewardsTierAndNameByPoints(
+            points: Int): Rewards? {
+
+        for (reward in rewards) {
+            if (reward.points == points) {
+                return reward
+            }
+        }
+        return null
+    }
+
     fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
@@ -30,14 +44,25 @@ class OrderService {
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = "??",
-            rewardsTier = "???",
-            nextRewardsTierName = "???",
-            nextRewardsTierProgress = 0.0.toFloat()
+            rewardsTier = getRewardsTierAndNameByPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() - Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()%MODULO_PCT)?.tier.toString(),
+            nextRewardsTier = getRewardsTierAndNameByPoints((MODULO_PCT + Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() - Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()%MODULO_PCT))?.tier.toString(),
+            nextRewardsTierName = getRewardsTierAndNameByPoints((MODULO_PCT + Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() - Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()%MODULO_PCT))?.rewardName.toString(),
+            nextRewardsTierProgress = 100*((Math.floor(orderRequest.purchaseTotal.toDouble()) - ((Math.floor(orderRequest.purchaseTotal.toDouble())-Math.floor(orderRequest.purchaseTotal.toDouble())%MODULO_PCT)))/100).toFloat()
         )
 
         return customers
     }
+
+    fun getCustomerRewardStatus(customerEmail: String): Customer? {
+        return customers.get(customerEmail)
+    }
+
+//    fun getAllCustomerRewards(): Array<Customer>? {
+//        var customerRewards: Array<Customer>
+//        val customerRewardsString = customers.values.toString();
+//        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
+//        return customerRewards;
+//    }
 
     private fun getRewards(): String {
         return """
