@@ -11,7 +11,6 @@ class OrderService {
 
     // Hard coded list of rewards. See the getRewards function below
     final var rewards: Array<Rewards>
-    final lateinit var customerRewards: Array<Customer>
 
     // Next Tier Increment
     final var MODULO_PCT = 100;
@@ -55,19 +54,19 @@ class OrderService {
     }
 
     fun getCustomerRewardStatus(customerEmail: String): Customer? {
-        return customers.get(customerEmail)
+        var customerReward: Customer
+        val customerRewardString =  customers.get(customerEmail).toString()
+        customerReward = gson.fromJson(customerRewardString, Customer::class.java)
+        return customerReward;
+//        return customers.get(customerEmail)
     }
 
-    fun getAllCustomerRewards(): Array<Customer> {
-        val customerRewardsString =  customers.values.toString()
-        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
-
-        for ( customer in customers)
-        {
-            println(customer.toString())
-        }
-        return customerRewards;
-    }
+//    fun getAllCustomerRewards(): Array<Customer> {
+//        var customerRewards: Array<Customer>
+//        val customerRewardsString =  customers.values.toString()
+//        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
+//        return customerRewards;
+//    }
 
     private fun getRewards(): String {
         return """
