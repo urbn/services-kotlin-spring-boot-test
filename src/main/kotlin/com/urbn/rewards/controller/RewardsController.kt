@@ -33,9 +33,9 @@ class RewardsController(private val orderService: OrderService) {
         return orderService.getCustomerRewardStatus(email)
     }
 
-    @GetMapping("/customer")
-    fun getAllCustomerRewards(): Array<Customer>? {
-        return orderService.getAllCustomerRewards()
-    }
+//    @GetMapping("/customer")
+//    fun getAllCustomerRewards(): Array<Customer>? {
+//        return orderService.getAllCustomerRewards()
+//    }
 }
 

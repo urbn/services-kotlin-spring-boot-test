@@ -57,12 +57,12 @@ class OrderService {
         return customers.get(customerEmail)
     }
 
-    fun getAllCustomerRewards(): Array<Customer>? {
-        var customerRewards: Array<Customer>
-        val customerRewardsString = customers.values.toString();
-        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
-        return customerRewards;
-    }
+//    fun getAllCustomerRewards(): Array<Customer>? {
+//        var customerRewards: Array<Customer>
+//        val customerRewardsString = customers.values.toString();
+//        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
+//        return customerRewards;
+//    }
 
     private fun getRewards(): String {
         return """

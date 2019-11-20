@@ -1,11 +1,55 @@
 xsizxenjins:scripts cevherdogan$ curl -X POST   http://localhost:8080/purchase   -H 'Content-Type: application/json'   -d '{
+"email": "test2@gmail.com",
+"purchaseTotal": 770
+}
+' | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   231    0   178  100    53    717    213 --:--:-- --:--:-- --:--:--   931
+{
+  "test2@gmail.com": {
+    "email": "test2@gmail.com",
+    "rewardPoints": 770,
+    "rewardsTier": "G",
+    "nextRewardsTier": "H",
+    "nextRewardsTierName": "40% off purchase",
+    "nextRewardsTierProgress": 70
+  }
+}
+xsizxenjins:scripts cevherdogan$ curl -X POST   http://localhost:8080/purchase   -H 'Content-Type: application/json'   -d '{
+"email": "test@gmail.com",
+"purchaseTotal": 610
+}
+' | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   405    0   353  100    52  58833   8666 --:--:-- --:--:-- --:--:-- 67500
+{
+  "test@gmail.com": {
+    "email": "test@gmail.com",
+    "rewardPoints": 610,
+    "rewardsTier": "F",
+    "nextRewardsTier": "G",
+    "nextRewardsTierName": "35% off purchase",
+    "nextRewardsTierProgress": 10
+  },
+  "test2@gmail.com": {
+    "email": "test2@gmail.com",
+    "rewardPoints": 770,
+    "rewardsTier": "G",
+    "nextRewardsTier": "H",
+    "nextRewardsTierName": "40% off purchase",
+    "nextRewardsTierProgress": 70
+  }
+}
+xsizxenjins:scripts cevherdogan$ curl -X POST   http://localhost:8080/purchase   -H 'Content-Type: application/json'   -d '{
 "email": "cevherd@gmail.com",
 "purchaseTotal": 210
 }
 ' | jq
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   589    0   534  100    55   130k  13750 --:--:-- --:--:-- --:--:--  143k
+100   589    0   534  100    55  89000   9166 --:--:-- --:--:-- --:--:-- 98166
 {
   "test@gmail.com": {
     "email": "test@gmail.com",
@@ -35,7 +79,7 @@ xsizxenjins:scripts cevherdogan$ curl -X POST   http://localhost:8080/purchase  
 xsizxenjins:scripts cevherdogan$ curl -X GET http://localhost:8080/customer?email="cevherd@gmail.com"  | jq
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100   160    0   160    0     0  40000      0 --:--:-- --:--:-- --:--:-- 40000
+100   160    0   160    0     0   2285      0 --:--:-- --:--:-- --:--:--  2285
 {
   "email": "cevherd@gmail.com",
   "rewardPoints": 210,
@@ -44,4 +88,27 @@ xsizxenjins:scripts cevherdogan$ curl -X GET http://localhost:8080/customer?emai
   "nextRewardsTierName": "15% off purchase",
   "nextRewardsTierProgress": 10
 }
+xsizxenjins:scripts cevherdogan$ curl -X GET http://localhost:8080/customer/  | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   160    0   160    0     0   5000      0 --:--:-- --:--:-- --:--:--  5000
+{
+  "timestamp": "2019-11-20T21:02:53.531+0000",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Required String parameter 'email' is not present",
+  "path": "/customer/"
+}
+xsizxenjins:scripts cevherdogan$ curl -X GET http://localhost:8080/customer  | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   159    0   159    0     0  12230      0 --:--:-- --:--:-- --:--:-- 12230
+{
+  "timestamp": "2019-11-20T21:03:04.471+0000",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Required String parameter 'email' is not present",
+  "path": "/customer"
+}
+xsizxenjins:scripts cevherdogan$
 
