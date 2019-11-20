@@ -13,7 +13,7 @@ class OrderService {
     final var rewards: Array<Rewards>
 
     // Next Tier Increment
-    final var NEXT_TIER_INCREMENT = 100;
+    final var MODULO_PCT = 100;
 
     // A list of in memory customers keyed off of the e-mail
     private val customers = HashMap<String, Customer>()
@@ -41,15 +41,13 @@ class OrderService {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
-        System.out.println(getRewardsTierAndNameByPoints(100).toString());
-
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = getRewardsTierAndNameByPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() + NEXT_TIER_INCREMENT)?.tier.toString(),
-            rewardsTier = getRewardsTierAndNameByPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt())?.tier.toString(),
-            nextRewardsTierName = getRewardsTierAndNameByPoints(100)?.rewardName.toString(),
-            nextRewardsTierProgress = 0.0.toFloat()
+            rewardsTier = getRewardsTierAndNameByPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() - Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()%MODULO_PCT)?.tier.toString(),
+            nextRewardsTier = getRewardsTierAndNameByPoints((MODULO_PCT + Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() - Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()%MODULO_PCT))?.tier.toString(),
+            nextRewardsTierName = getRewardsTierAndNameByPoints((MODULO_PCT + Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() - Math.floor(orderRequest.purchaseTotal.toDouble()).toInt()%MODULO_PCT))?.rewardName.toString(),
+            nextRewardsTierProgress = 100*((Math.floor(orderRequest.purchaseTotal.toDouble()) - ((Math.floor(orderRequest.purchaseTotal.toDouble())-Math.floor(orderRequest.purchaseTotal.toDouble())%MODULO_PCT)))/100).toFloat()
         )
 
         return customers
