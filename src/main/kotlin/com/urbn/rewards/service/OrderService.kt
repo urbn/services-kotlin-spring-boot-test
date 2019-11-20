@@ -46,8 +46,8 @@ class OrderService {
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
-            nextRewardsTier = getRewardsTierAndNameByPoints(100 + NEXT_TIER_INCREMENT)?.tier.toString(),
-            rewardsTier = getRewardsTierAndNameByPoints(100)?.tier.toString(),
+            nextRewardsTier = getRewardsTierAndNameByPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt() + NEXT_TIER_INCREMENT)?.tier.toString(),
+            rewardsTier = getRewardsTierAndNameByPoints(Math.floor(orderRequest.purchaseTotal.toDouble()).toInt())?.tier.toString(),
             nextRewardsTierName = getRewardsTierAndNameByPoints(100)?.rewardName.toString(),
             nextRewardsTierProgress = 0.0.toFloat()
         )
