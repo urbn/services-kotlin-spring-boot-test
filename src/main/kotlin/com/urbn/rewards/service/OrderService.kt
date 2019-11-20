@@ -54,20 +54,14 @@ class OrderService {
     }
 
     fun getCustomerRewardStatus(customerEmail: String): Customer? {
-//        var customerReward: Customer
-//        val customerRewardString =  customers.get(customerEmail).toString()
-//        customerReward = gson.fromJson(customerRewardString, Customer::class.java)
-//        return customerReward;
         return customers.get(customerEmail)
     }
 
     fun getAllCustomerRewards(): Array<Customer>? {
-//        var customerRewards: Array<Customer>
-//        val customerRewardsString =  customers.values.toString()
-//        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
-//        return customerRewards;
-        if ( customers.size > 0 ) return customers.values.toTypedArray();
-        return null;
+        var customerRewards: Array<Customer>
+        val customerRewardsString = customers.values.toString();
+        customerRewards = gson.fromJson(customerRewardsString, Array<Customer>::class.java)
+        return customerRewards;
     }
 
     private fun getRewards(): String {
