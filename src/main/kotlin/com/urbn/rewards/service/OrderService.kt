@@ -53,6 +53,10 @@ class OrderService {
         return customers
     }
 
+    fun getCustomerRewardStatus(customerEmail: String): Customer? {
+        return customers[customerEmail]
+    }
+
     private fun getRewards(): String {
         return """
             [
