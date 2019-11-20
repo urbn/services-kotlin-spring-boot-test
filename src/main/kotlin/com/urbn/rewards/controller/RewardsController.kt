@@ -32,5 +32,10 @@ class RewardsController(private val orderService: OrderService) {
     fun getCustomerRewards(@RequestParam email: String): Customer? {
         return orderService.getCustomerRewardStatus(email)
     }
+
+    @GetMapping("/customer") // value: email, defaultValue: customer@gmail.com
+    fun getAllCustomerRewards(): MutableCollection<Customer>? {
+        return orderService.getAllCustomerRewards()
+    }
 }
 

@@ -57,6 +57,14 @@ class OrderService {
         return customers.get(customerEmail)
     }
 
+    fun getAllCustomerRewards(): MutableCollection<Customer> {
+        for ( customer in customers)
+        {
+            println(customer.toString())
+        }
+        return customers.values;
+    }
+
     private fun getRewards(): String {
         return """
             [
