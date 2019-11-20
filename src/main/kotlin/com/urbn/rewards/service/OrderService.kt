@@ -38,18 +38,14 @@ class OrderService {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
 
-        System.out.println(getRewards());
         System.out.println(getRewardsTierAndNameByPoints(100).toString());
-        System.out.println(getRewardsTierAndNameByPoints(200).toString());
-        System.out.println(getRewardsTierAndNameByPoints(400).toString());
-        System.out.println(getRewardsTierAndNameByPoints(1000).toString());
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
             rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
             nextRewardsTier = "??",
-            rewardsTier = "???",
-            nextRewardsTierName = "???",
+            rewardsTier = getRewardsTierAndNameByPoints(100)?.tier.toString(),
+            nextRewardsTierName = getRewardsTierAndNameByPoints(100)?.rewardName.toString(),
             nextRewardsTierProgress = 0.0.toFloat()
         )
 
