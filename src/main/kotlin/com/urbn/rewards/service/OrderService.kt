@@ -5,7 +5,6 @@ import com.urbn.rewards.models.Customer
 import com.urbn.rewards.models.OrderRequest
 import com.urbn.rewards.models.Rewards
 import org.springframework.stereotype.Service
-import kotlin.math.floor
 
 @Service
 class OrderService {
@@ -24,9 +23,26 @@ class OrderService {
         rewards = gson.fromJson(rewardString, Array<Rewards>::class.java)
     }
 
+    fun getRewardsTierAndNameByPoints(
+            points: Int): Rewards? {
+
+        for (reward in rewards) {
+            if (reward.points == points) {
+                return reward
+            }
+        }
+        return null
+    }
+
     fun purchase(orderRequest: OrderRequest): Map<String, Customer> {
         // Implement purchase endpoint logic here
         // Right now, we're only storing the customer into a hash map
+
+        System.out.println(getRewards());
+        System.out.println(getRewardsTierAndNameByPoints(100).toString());
+        System.out.println(getRewardsTierAndNameByPoints(200).toString());
+        System.out.println(getRewardsTierAndNameByPoints(400).toString());
+        System.out.println(getRewardsTierAndNameByPoints(1000).toString());
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
