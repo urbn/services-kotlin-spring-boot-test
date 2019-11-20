@@ -16,7 +16,7 @@ class OrderService {
     final var MODULO_PCT = 100;
 
     // A list of in memory customers keyed off of the e-mail
-    private val customers = HashMap<String, Customer>()
+    val customers = HashMap<String, Customer>()
 
     private val gson = Gson()
 
@@ -54,6 +54,11 @@ class OrderService {
     }
 
     fun getCustomerRewardStatus(customerEmail: String): Customer? {
+
+        for (c in customers) {
+            println(c.toString());
+        }
+
         return customers[customerEmail]
     }
 

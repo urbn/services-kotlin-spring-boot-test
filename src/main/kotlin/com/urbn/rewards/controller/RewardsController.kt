@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class RewardsController(private val orderService: OrderService) {
 
-    private val customers = HashMap<String, Customer>()
+    val customers = HashMap<String, Customer>()
 
     private val gson = Gson()
 
@@ -31,9 +31,7 @@ class RewardsController(private val orderService: OrderService) {
     // http://localhost:8080/customer?email=emailid
     @GetMapping("/customer") // value: email, defaultValue: customer@gmail.com
     fun getCustomerRewards(@RequestParam email: String): Customer? {
-        return getCustomerRewardStatus(email)
+        return orderService.getCustomerRewardStatus(email)
     }
-
-    private fun getCustomerRewardStatus(email: String): Customer? = customers[email]
 }
 
