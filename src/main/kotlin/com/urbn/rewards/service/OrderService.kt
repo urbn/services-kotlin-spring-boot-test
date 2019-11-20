@@ -5,6 +5,7 @@ import com.urbn.rewards.models.Customer
 import com.urbn.rewards.models.OrderRequest
 import com.urbn.rewards.models.Rewards
 import org.springframework.stereotype.Service
+import kotlin.math.floor
 
 @Service
 class OrderService {
@@ -29,7 +30,7 @@ class OrderService {
 
         customers[orderRequest.email] = Customer(
             email = orderRequest.email,
-            rewardPoints = Math.floor(orderRequest.purchaseTotal.toDouble()).toInt(),
+            rewardPoints = orderRequest.purchaseTotal.toFloat(),
             nextRewardsTier = "??",
             rewardsTier = "???",
             nextRewardsTierName = "???",

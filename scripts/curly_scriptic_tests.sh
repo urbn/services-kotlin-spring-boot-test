@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# This is just a note taking commit to test several things 1- forked storied branch commit 2- POST to the service
-#
-# Base passed
-# TODO: Data type issue truncates float to integer for purchaseTotal
 curl -X POST \
   http://localhost:8080/purchase \
   -H 'Content-Type: application/json' \
@@ -12,6 +8,25 @@ curl -X POST \
 	"purchaseTotal": 100.80
 }
 ' | jq
+
+#xsizxenjins:scripts cevherdogan$ curl -X POST   http://localhost:8080/purchase   -H 'Content-Type: application/json'   -d '{
+#"email": "cevherd@gmail.com",
+#"purchaseTotal": 100.80
+#}
+#' | jq
+#  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+#                                 Dload  Upload   Total   Spent    Left  Speed
+#100   231    0   173  100    58  21625   7250 --:--:-- --:--:-- --:--:-- 28875
+#{
+#  "cevherd@gmail.com": {
+#    "email": "cevherd@gmail.com",
+#    "rewardPoints": 100.8,
+#    "rewardsTier": "???",
+#    "nextRewardsTier": "??",
+#    "nextRewardsTierName": "???",
+#    "nextRewardsTierProgress": 0
+#  }
+#}
 
 curl -X POST \
   http://localhost:8080/purchase \
@@ -31,7 +46,7 @@ curl -X POST \
   -H 'Content-Type: application/json' \
   -d '{
 	"email": "cevherd@gmail.com",
-	"purchaseTotal": 100.80
+	"purchaseTotal": 400.80
 	"rewardPoints": 40,
 	"rewardsTier": "3",
 	"nextRewardsTier": "4",
